@@ -11,7 +11,6 @@ int main() {
 
   std::string userCommand;
   std::getline(std::cin, userCommand);
-  std::cout << userCommand << std::endl;
 
   std::cout << userCommand << ": command not found" << std::endl;
 }
