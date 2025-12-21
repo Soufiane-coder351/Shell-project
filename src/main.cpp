@@ -47,7 +47,7 @@ int main()
         }else if(firstWord == "type"){
             std::unordered_set<std::string> knownCommands = {"echo", "exit", "type"};
             if(knownCommands.count(rest)){
-                std::cout << firstWord << " is a shell builtin\n";
+                std::cout << rest << " is a shell builtin\n";
             }else{
                 std::cout << rest << ": not found\n";
             }
