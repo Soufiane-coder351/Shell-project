@@ -35,10 +35,9 @@ int main()
 
         if (firstWord == "echo") {
             std::cout << rest << "\n";
-            continue;
+        } else{
+            std::cout << userCommand << ": command not found" << std::endl;
         }
-
-        std::cout << userCommand << ": command not found" << std::endl;
         std::cout << "$ ";
     }
 }
