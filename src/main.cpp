@@ -27,6 +27,7 @@ int main()
         }
         // get the rest
         std::string rest;
+        i++;
         while (i < userCommand.size()) {
             rest += userCommand[i];
             i++;
