@@ -8,4 +8,10 @@ int main() {
 
   // TODO: Uncomment the code below to pass the first stage
   std::cout << "$ ";
+
+  std::string userCommand;
+  std::cin >> userCommand;
+  std::cout << userCommand << std::endl;
+
+  std::cout << userCommand << ": command not found" << std::endl;
 }
