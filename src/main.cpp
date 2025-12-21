@@ -8,9 +8,13 @@ int main() {
 
   // TODO: Uncomment the code below to pass the first stage
   std::cout << "$ ";
+  while(true){
+  
+    std::string userCommand;
+    std::getline(std::cin, userCommand);
+  
+    std::cout << userCommand << ": command not found" << std::endl;
+    std::cout << "$ ";
+  }
 
-  std::string userCommand;
-  std::getline(std::cin, userCommand);
-
-  std::cout << userCommand << ": command not found" << std::endl;
 }
