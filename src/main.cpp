@@ -47,17 +47,17 @@ std::vector<std::string> splitPATH(){
     return dirs;
 }
 
-std::string inPATH(std::string rest)
+std::string inPATH(const std::string& rest)
 {
     std::vector<std::string> dirs = splitPATH();
-    for(auto dir: dirs){
+    for(const auto& dir: dirs){
         if(dir.empty()) continue;
         fs::path p = fs::path(dir) / rest;
         if(fs::exists(p) && fs::is_regular_file(p) && access(p.string().c_str(), X_OK) == 0){
             return p.string();
         }
     }
-    return "none";
+    return "";
 }
 
 int main()
@@ -65,31 +65,34 @@ int main()
     // Flush after every std::cout / std:cerr
     std::cout << std::unitbuf;
     std::cerr << std::unitbuf;
-
-    // TODO: Uncomment the code below to pass the first stage
+    
+    const std::unordered_set<std::string> knownCommands = {"echo", "exit", "type"};
+    
     std::cout << "$ ";
-    while (true)
+    std::string userCommand;
+    while (std::getline(std::cin, userCommand))
     {
 
-        std::string userCommand;
-        std::getline(std::cin, userCommand);
-
-        if (userCommand == "exit") break;
-
+        
         auto [firstWord, rest] = splitFirstWord(userCommand);
+
+        if (firstWord == "exit") break;
 
         if (firstWord == "echo") {
             std::cout << rest << "\n";
         }else if(firstWord == "type"){
-            std::unordered_set<std::string> knownCommands = {"echo", "exit", "type"};
             if(knownCommands.count(rest)){
                 std::cout << rest << " is a shell builtin\n";
             }
-            else if(inPATH(rest) != "none"){
-                std::cout << rest << " is " << inPATH(rest) << std::endl;
-            }
             else{
-                std::cout << rest << ": not found\n";
+                std::string pathResult = inPATH(rest);
+                if(pathResult != ""){
+                    std::cout << rest << " is " << pathResult << std::endl;
+                }
+                else{
+                    std::cout << rest << ": not found\n";
+                }
+
             }
 
         } else{
