@@ -54,7 +54,7 @@ std::string inPATH(std::string rest)
         if(dir.empty()) continue;
         fs::path p = fs::path(dir) / rest;
         if(fs::exists(p) && fs::is_regular_file(p) && access(p.string().c_str(), X_OK) == 0){
-            return dir;
+            return p.string();
         }
     }
     return "none";
