@@ -5,6 +5,7 @@
 #include <vector>
 #include <filesystem>
 #include <unistd.h> // for access()
+#include <cstdlib>
 
 namespace fs = std::filesystem;
 
@@ -31,28 +32,28 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
     return {firstWord, rest};
 }
 
-std::vector<std::string> splitAllString(std::string s)
-{
-    std::vector<std::string> splittedString;
-    std::string word;
-    size_t i = 0;
-    while (s[i] == ' ')
-        i++;
-    while (i < s.length())
-    {
-        if (s[i] == ' ')
-        {
-            splittedString.push_back(word);
-            word = "";
-        }
-        else
-            word += s[i];
-        i++;
-    }
-    if (word != "")
-        splittedString.push_back(word);
-    return splittedString;
-}
+// std::vector<std::string> splitAllString(std::string s)
+// {
+//     std::vector<std::string> splittedString;
+//     std::string word;
+//     size_t i = 0;
+//     while (s[i] == ' ')
+//         i++;
+//     while (i < s.length())
+//     {
+//         if (s[i] == ' ')
+//         {
+//             splittedString.push_back(word);
+//             word = "";
+//         }
+//         else
+//             word += s[i];
+//         i++;
+//     }
+//     if (word != "")
+//         splittedString.push_back(word);
+//     return splittedString;
+// }
 
 std::vector<std::string> splitPATH()
 {
@@ -138,12 +139,7 @@ int main()
             std::string pathResult = inPATH(firstWord);
             if (pathResult != "")
             {
-                std::vector<std::string> splittedString = splitAllString(userCommand);
-                std::vector<char *> argv;
-                for (auto &s : splittedString)
-                    argv.push_back(s.data());
-                argv.push_back(nullptr);
-                execvp(argv[0], argv.data());
+                int ret = system(userCommand.c_str());
             }
             else
             {
