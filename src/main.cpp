@@ -32,29 +32,6 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
     return {firstWord, rest};
 }
 
-// std::vector<std::string> splitAllString(std::string s)
-// {
-//     std::vector<std::string> splittedString;
-//     std::string word;
-//     size_t i = 0;
-//     while (s[i] == ' ')
-//         i++;
-//     while (i < s.length())
-//     {
-//         if (s[i] == ' ')
-//         {
-//             splittedString.push_back(word);
-//             word = "";
-//         }
-//         else
-//             word += s[i];
-//         i++;
-//     }
-//     if (word != "")
-//         splittedString.push_back(word);
-//     return splittedString;
-// }
-
 std::vector<std::string> splitPATH()
 {
     std::vector<std::string> dirs;
@@ -139,6 +116,7 @@ int main()
             std::string pathResult = inPATH(firstWord);
             if (pathResult != "")
             {
+                // run the command
                 int ret = system(userCommand.c_str());
             }
             else
