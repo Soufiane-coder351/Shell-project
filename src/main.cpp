@@ -128,7 +128,12 @@ int main()
                     fs::current_path(rest);
                 }
             }
-            else if(rest[0] == '.') // relative path
+            else if(rest[0] == '~') // HOME path
+            {
+                std::string home = std::getenv("HOME");
+                fs::current_path(home);
+            }
+            else // if(rest[0] == '.') // relative path
             {
                 fs::path cwd = fs::current_path();
                 fs::path newPath = cwd / rest; // handles parsing 
