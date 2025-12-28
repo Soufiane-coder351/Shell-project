@@ -110,6 +110,11 @@ int main()
                 }
             }
         }
+        else if(firstWord == "pwd")
+        {
+            std::string cwd = std::filesystem::current_path().string();
+            std::cout << cwd << std::endl;
+        }
         else
         {
             // try to run it as an executable
