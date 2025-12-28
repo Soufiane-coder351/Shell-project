@@ -112,7 +112,7 @@ int main()
         }
         else if(firstWord == "pwd")
         {
-            std::string cwd = std::filesystem::current_path().string();
+            std::string cwd = fs::current_path().string();
             std::cout << cwd << std::endl;
         }
         else if(firstWord == "cd")
@@ -126,6 +126,19 @@ int main()
                 else
                 {
                     fs::current_path(rest);
+                }
+            }
+            else if(rest[0] == '.') // relative path
+            {
+                fs::path cwd = fs::current_path();
+                fs::path newPath = cwd / rest; // handles parsing 
+                if(!fs::exists(newPath) || !fs::is_directory(newPath))
+                {
+                    std::cout << "cd: " << rest << ": No such file or directory" << std::endl; 
+                }
+                else
+                {
+                    fs::current_path(newPath);
                 }
             }
         }
