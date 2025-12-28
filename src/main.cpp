@@ -75,7 +75,7 @@ int main()
     std::cout << std::unitbuf;
     std::cerr << std::unitbuf;
 
-    const std::unordered_set<std::string> knownCommands = {"echo", "exit", "type", "pwd"};
+    const std::unordered_set<std::string> knownCommands = {"echo", "exit", "type", "pwd", "cd"};
 
     std::cout << "$ ";
     std::string userCommand;
@@ -114,6 +114,20 @@ int main()
         {
             std::string cwd = std::filesystem::current_path().string();
             std::cout << cwd << std::endl;
+        }
+        else if(firstWord == "cd")
+        {
+            if(rest[0] == '/') // absolute path
+            {
+                if(!fs::exists(rest) || !fs::is_directory(rest))
+                {
+                    std::cout << "cd: " << rest << ": No such file or directory" << std::endl; 
+                }
+                else
+                {
+                    fs::current_path(rest);
+                }
+            }
         }
         else
         {
