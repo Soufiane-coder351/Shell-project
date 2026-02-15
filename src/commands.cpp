@@ -4,28 +4,38 @@
 #include <cstdlib>
 
 void handleEcho(const std::string& rest) {
-    std::string result;
+    std::vector<std::string> words;
+    std::string word;
     size_t i = 0;
-    while (i < rest.size()) {
-        // Skip leading spaces outside quotes
-        while (i < rest.size() && rest[i] == ' ') ++i;
-        if (i >= rest.size()) break;
+    bool inSingleQuote = false;
 
+    while (i < rest.size()) {
         if (rest[i] == '\'') {
-            // Inside single quotes: take everything literally until next quote
+            inSingleQuote = !inSingleQuote;
             ++i;
-            while (i < rest.size() && rest[i] != '\'') {
-                result += rest[i++];
-            }
-            if (i < rest.size() && rest[i] == '\'') ++i; // skip closing quote
-        } else {
-            // Outside quotes: take until next space or quote
-            while (i < rest.size() && rest[i] != ' ' && rest[i] != '\'') {
-                result += rest[i++];
-            }
+            continue;
         }
+        if (!inSingleQuote && (rest[i] == ' ' || rest[i] == '\t')) {
+            if (!word.empty()) {
+                words.push_back(word);
+                word.clear();
+            }
+            // Skip consecutive spaces outside quotes
+            while (i < rest.size() && (rest[i] == ' ' || rest[i] == '\t')) ++i;
+            continue;
+        }
+        word += rest[i++];
     }
-    std::cout << result << "\n";
+    if (!word.empty()) {
+        words.push_back(word);
+    }
+
+    // Print words separated by a single space
+    for (size_t j = 0; j < words.size(); ++j) {
+        if (j > 0) std::cout << " ";
+        std::cout << words[j];
+    }
+    std::cout << "\n";
 }
 
 void handleType(const std::string& rest, const std::unordered_set<std::string>& knownCommands) {
