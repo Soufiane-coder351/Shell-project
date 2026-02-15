@@ -4,7 +4,14 @@
 #include <cstdlib>
 
 void handleEcho(const std::string& rest) {
-    std::cout << rest << "\n";
+    std::string output = rest;
+    // Remove surrounding single or double quotes if present
+    if ((output.size() >= 2) &&
+        ((output.front() == '\'' && output.back() == '\'') ||
+         (output.front() == '"' && output.back() == '"'))) {
+        output = output.substr(1, output.size() - 2);
+    }
+    std::cout << output << "\n";
 }
 
 void handleType(const std::string& rest, const std::unordered_set<std::string>& knownCommands) {
