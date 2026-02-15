@@ -4,14 +4,28 @@
 #include <cstdlib>
 
 void handleEcho(const std::string& rest) {
-    std::string output = rest;
-    // Remove surrounding single or double quotes if present
-    if ((output.size() >= 2) &&
-        ((output.front() == '\'' && output.back() == '\'') ||
-         (output.front() == '"' && output.back() == '"'))) {
-        output = output.substr(1, output.size() - 2);
+    std::string result;
+    size_t i = 0;
+    while (i < rest.size()) {
+        // Skip leading spaces outside quotes
+        while (i < rest.size() && rest[i] == ' ') ++i;
+        if (i >= rest.size()) break;
+
+        if (rest[i] == '\'') {
+            // Inside single quotes: take everything literally until next quote
+            ++i;
+            while (i < rest.size() && rest[i] != '\'') {
+                result += rest[i++];
+            }
+            if (i < rest.size() && rest[i] == '\'') ++i; // skip closing quote
+        } else {
+            // Outside quotes: take until next space or quote
+            while (i < rest.size() && rest[i] != ' ' && rest[i] != '\'') {
+                result += rest[i++];
+            }
+        }
     }
-    std::cout << output << "\n";
+    std::cout << result << "\n";
 }
 
 void handleType(const std::string& rest, const std::unordered_set<std::string>& knownCommands) {
