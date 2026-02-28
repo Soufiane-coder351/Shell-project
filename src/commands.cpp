@@ -8,14 +8,23 @@ void handleEcho(const std::string& rest) {
     std::string word;
     size_t i = 0;
     bool inSingleQuote = false;
+    bool inDoubleQuote = false;
 
     while (i < rest.size()) {
-        if (rest[i] == '\'') {
+        // Toggle double quote (only outside single quotes)
+        if (rest[i] == '"' && !inSingleQuote) {
+            inDoubleQuote = !inDoubleQuote;
+            ++i;
+            continue;
+        }
+        // Toggle single quote (only outside double quotes)
+        if (rest[i] == '\'' && !inDoubleQuote) {
             inSingleQuote = !inSingleQuote;
             ++i;
             continue;
         }
-        if (!inSingleQuote && (rest[i] == ' ' || rest[i] == '\t')) {
+        // Whitespace is a delimiter only outside all quotes
+        if (!inSingleQuote && !inDoubleQuote && (rest[i] == ' ' || rest[i] == '\t')) {
             if (!word.empty()) {
                 words.push_back(word);
                 word.clear();
