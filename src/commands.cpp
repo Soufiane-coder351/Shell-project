@@ -13,14 +13,22 @@ void handleEcho(const std::string& rest) {
     while (i < rest.size()) {
         // Toggle double quote (only outside single quotes)
         if (rest[i] == '"' && !inSingleQuote) {
-            if(i > 0 && rest[i-1] == '\\') continue;
+            if(i > 0 && rest[i-1] == '\\') {
+                word += '"';
+                ++i;
+                continue;
+            }
             inDoubleQuote = !inDoubleQuote;
             ++i;
             continue;
         }
         // Toggle single quote (only outside double quotes)
         if (rest[i] == '\'' && !inDoubleQuote) {
-            if(i > 0 && rest[i-1] == '\\') continue;
+            if(i > 0 && rest[i-1] == '\\') {
+                word += '\'';
+                ++i;
+                continue;
+            }
             inSingleQuote = !inSingleQuote;
             ++i;
             continue;
