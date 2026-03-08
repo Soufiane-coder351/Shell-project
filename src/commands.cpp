@@ -13,12 +13,14 @@ void handleEcho(const std::string& rest) {
     while (i < rest.size()) {
         // Toggle double quote (only outside single quotes)
         if (rest[i] == '"' && !inSingleQuote) {
+            if(i > 0 && rest[i-1] == '\\') continue;
             inDoubleQuote = !inDoubleQuote;
             ++i;
             continue;
         }
         // Toggle single quote (only outside double quotes)
         if (rest[i] == '\'' && !inDoubleQuote) {
+            if(i > 0 && rest[i-1] == '\\') continue;
             inSingleQuote = !inSingleQuote;
             ++i;
             continue;
@@ -30,7 +32,14 @@ void handleEcho(const std::string& rest) {
                 word.clear();
             }
             // Skip consecutive spaces outside quotes
-            while (i < rest.size() && (rest[i] == ' ' || rest[i] == '\t')) ++i;
+            while (i < rest.size() && (rest[i] == ' ' || rest[i] == '\t')){
+                if(i > 0 && rest[i-1] == '\\') word += " ";
+                ++i;
+            }
+            continue;
+        }
+        if(!inSingleQuote && !inDoubleQuote && rest[i] == '\\'){
+            ++i;
             continue;
         }
         word += rest[i++];
