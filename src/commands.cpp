@@ -27,16 +27,14 @@ void handleEcho(const std::string& rest) {
         }
         // Whitespace is a delimiter only outside all quotes
         if (!inSingleQuote && !inDoubleQuote && (rest[i] == ' ' || rest[i] == '\t')) {
-            if (!word.empty() && word!=" ") {
+            if(i > 0 && rest[i-1] == '\\') continue;
+            if (!word.empty()){
 
                 words.push_back(word);
                 word.clear();
             }
             // Skip consecutive spaces outside quotes
-            while (i < rest.size() && (rest[i] == ' ' || rest[i] == '\t')){
-                if(i > 0 && rest[i-1] == '\\') word = " ";
-                ++i;
-            }
+            while (i < rest.size() && (rest[i] == ' ' || rest[i] == '\t')) i++;
             continue;
         }
         if(!inSingleQuote && !inDoubleQuote && rest[i] == '\\'){
