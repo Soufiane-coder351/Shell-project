@@ -6,55 +6,48 @@
 void handleEcho(const std::string& rest) {
     std::vector<std::string> words;
     std::string word;
-    size_t i = 0;
     bool inSingleQuote = false;
     bool inDoubleQuote = false;
 
-    while (i < rest.size()) {
-        // Toggle double quote (only outside single quotes)
-        if (rest[i] == '"' && !inSingleQuote) {
-            if(i > 0 && rest[i-1] == '\\') {
-                word += '"';
-                ++i;
-                continue;
-            }
-            inDoubleQuote = !inDoubleQuote;
-            ++i;
-            continue;
-        }
-        // Toggle single quote (only outside double quotes)
-        if (rest[i] == '\'' && !inDoubleQuote) {
-            if(i > 0 && rest[i-1] == '\\') {
-                word += '\'';
-                ++i;
-                continue;
-            }
-            inSingleQuote = !inSingleQuote;
-            ++i;
-            continue;
-        }
-        // Whitespace is a delimiter only outside all quotes
-        if (!inSingleQuote && !inDoubleQuote && !(i > 0 && rest[i-1] == '\\') && (rest[i] == ' ' || rest[i] == '\t')) {
-            if (!word.empty()){
+    for (size_t i = 0; i < rest.size(); ++i) {
+        char c = rest[i];
 
+        // Handle backslash escaping outside quotes
+        if (c == '\\' && !inSingleQuote && !inDoubleQuote) {
+            if (i + 1 < rest.size()) {
+                word += rest[++i];
+            }
+            continue;
+        }
+
+        // Toggle double quotes (ignored inside single quotes)
+        if (c == '"' && !inSingleQuote) {
+            inDoubleQuote = !inDoubleQuote;
+            continue;
+        }
+
+        // Toggle single quotes (ignored inside double quotes)
+        if (c == '\'' && !inDoubleQuote) {
+            inSingleQuote = !inSingleQuote;
+            continue;
+        }
+
+        // Whitespace delimits words outside quotes
+        if ((c == ' ' || c == '\t') && !inSingleQuote && !inDoubleQuote) {
+            if (!word.empty()) {
                 words.push_back(word);
                 word.clear();
             }
-            // Skip consecutive spaces outside quotes
-            while (i < rest.size() && (rest[i] == ' ' || rest[i] == '\t')) i++;
             continue;
         }
-        if(!inSingleQuote && !inDoubleQuote && rest[i] == '\\'){
-            ++i;
-            continue;
-        }
-        word += rest[i++];
+
+        word += c;
     }
+
     if (!word.empty()) {
         words.push_back(word);
     }
 
-    // Print words separated by a single space
     for (size_t j = 0; j < words.size(); ++j) {
         if (j > 0) std::cout << " ";
         std::cout << words[j];
