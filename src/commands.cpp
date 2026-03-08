@@ -26,8 +26,7 @@ void handleEcho(const std::string& rest) {
             continue;
         }
         // Whitespace is a delimiter only outside all quotes
-        if (!inSingleQuote && !inDoubleQuote && (rest[i] == ' ' || rest[i] == '\t')) {
-            if(i > 0 && rest[i-1] == '\\') continue;
+        if (!inSingleQuote && !inDoubleQuote && !(i > 0 && rest[i-1] == '\\') && (rest[i] == ' ' || rest[i] == '\t')) {
             if (!word.empty()){
 
                 words.push_back(word);
