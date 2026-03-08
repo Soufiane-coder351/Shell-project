@@ -33,7 +33,7 @@ void handleEcho(const std::string& rest) {
             }
             // Skip consecutive spaces outside quotes
             while (i < rest.size() && (rest[i] == ' ' || rest[i] == '\t')){
-                if(i > 0 && rest[i-1] == '\\') word += " ";
+                // if(i > 0 && rest[i-1] == '\\') word += " ";
                 ++i;
             }
             continue;
