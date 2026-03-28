@@ -5,42 +5,86 @@
 
 namespace fs = std::filesystem;
 
+std::vector<std::string> tokenizeCommandLine(const std::string& input)
+{
+    std::vector<std::string> words;
+    std::string word;
+    bool inSingleQuote = false;
+    bool inDoubleQuote = false;
+
+    for (size_t i = 0; i < input.size(); ++i)
+    {
+        char c = input[i];
+
+        if (c == '\\' && !inSingleQuote && !inDoubleQuote)
+        {
+            if (i + 1 < input.size())
+            {
+                word += input[++i];
+            }
+            continue;
+        }
+
+        if (c == '\\' && inDoubleQuote)
+        {
+            if (i + 1 < input.size() && (input[i + 1] == '"' || input[i + 1] == '\\'))
+            {
+                word += input[++i];
+                continue;
+            }
+        }
+
+        if (c == '"' && !inSingleQuote)
+        {
+            inDoubleQuote = !inDoubleQuote;
+            continue;
+        }
+
+        if (c == '\'' && !inDoubleQuote)
+        {
+            inSingleQuote = !inSingleQuote;
+            continue;
+        }
+
+        if ((c == ' ' || c == '\t') && !inSingleQuote && !inDoubleQuote)
+        {
+            if (!word.empty())
+            {
+                words.push_back(word);
+                word.clear();
+            }
+            continue;
+        }
+
+        word += c;
+    }
+
+    if (!word.empty())
+    {
+        words.push_back(word);
+    }
+
+    return words;
+}
+
 std::pair<std::string, std::string> splitFirstWord(std::string s)
 {
-    std::string firstWord, rest;
-    size_t i = 0;
-    const size_t n = s.size();
-
-    // Skip leading spaces
-    while (i < n && s[i] == ' ') i++;
-
-    if (i >= n) return {"", ""};
-
-    // Quoted first token: '...' or "..."
-    if (s[i] == '\'' || s[i] == '"')
+    std::vector<std::string> words = tokenizeCommandLine(s);
+    if (words.empty())
     {
-        char quoteChar = s[i++];
-        while (i < n && s[i] != quoteChar)
-        {
-            firstWord += s[i++];
-        }
-        // Skip closing quote if found
-        if (i < n && s[i] == quoteChar) i++;
-    }
-    else
-    {
-        // Unquoted first token
-        while (i < n && s[i] != ' ')
-        {
-            firstWord += s[i++];
-        }
+        return {"", ""};
     }
 
-    // Skip spaces before rest
-    while (i < n && s[i] == ' ') i++;
-
-    // Remaining text
-    if (i < n) rest = s.substr(i);
+    std::string firstWord = words[0];
+    std::string rest;
+    for (size_t i = 1; i < words.size(); ++i)
+    {
+        if (i > 1)
+        {
+            rest += ' ';
+        }
+        rest += words[i];
+    }
 
     return {firstWord, rest};
 }
