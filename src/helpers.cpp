@@ -9,19 +9,39 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
 {
     std::string firstWord, rest;
     size_t i = 0;
-    while (s[i] == ' ')
-        i++;
-    while (i < s.length() && s[i] != ' ')
+    const size_t n = s.size();
+
+    // Skip leading spaces
+    while (i < n && s[i] == ' ') i++;
+
+    if (i >= n) return {"", ""};
+
+    // Quoted first token: '...' or "..."
+    if (s[i] == '\'' || s[i] == '"')
     {
-        firstWord += s[i];
-        i++;
+        char quoteChar = s[i++];
+        while (i < n && s[i] != quoteChar)
+        {
+            firstWord += s[i++];
+        }
+        // Skip closing quote if found
+        if (i < n && s[i] == quoteChar) i++;
     }
-    i++;
-    while (i < s.size())
+    else
     {
-        rest += s[i];
-        i++;
+        // Unquoted first token
+        while (i < n && s[i] != ' ')
+        {
+            firstWord += s[i++];
+        }
     }
+
+    // Skip spaces before rest
+    while (i < n && s[i] == ' ') i++;
+
+    // Remaining text
+    if (i < n) rest = s.substr(i);
+
     return {firstWord, rest};
 }
 
