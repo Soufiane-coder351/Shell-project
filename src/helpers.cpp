@@ -27,7 +27,7 @@ std::vector<std::string> tokenizeCommandLine(const std::string& input)
 
         if (c == '\\' && inDoubleQuote)
         {
-            if (input[i + 1] == '"' || input[i + 1] == '\\')
+            if (input[i + 1] == '\"' || input[i + 1] == '\\')
             {
                 word += input[++i];
                 continue;
