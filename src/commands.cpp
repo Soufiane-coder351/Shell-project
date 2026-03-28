@@ -20,6 +20,13 @@ void handleEcho(const std::string& rest) {
             continue;
         }
 
+        if(c == '\\' && inDoubleQuote){
+            if(rest[i+1] == '\"' || rest[i+1] == '\\'){
+                word += rest[++i];
+                continue;
+            }
+        }
+
         // Toggle double quotes (ignored inside single quotes)
         if (c == '"' && !inSingleQuote) {
             inDoubleQuote = !inDoubleQuote;
