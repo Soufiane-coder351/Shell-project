@@ -1,9 +1,82 @@
 #include "helpers.h"
 #include <cstdlib>
 #include <filesystem>
+#include <iostream>
 #include <unistd.h>
 
 namespace fs = std::filesystem;
+
+std::string tokenizeCommandLine(const std::string& input)
+{
+    std::vector<std::string> words;
+    std::string word;
+    bool inSingleQuote = false;
+    bool inDoubleQuote = false;
+
+    for (size_t i = 0; i < input.size(); ++i)
+    {
+        char c = input[i];
+
+        if (c == '\\' && !inSingleQuote && !inDoubleQuote)
+        {
+            if (i + 1 < input.size())
+            {
+                word += input[++i];
+            }
+            continue;
+        }
+
+        if (c == '\\' && inDoubleQuote)
+        {
+            if (i + 1 < input.size() && (input[i + 1] == '"' || input[i + 1] == '\\'))
+            {
+                word += input[++i];
+                continue;
+            }
+        }
+
+        if (c == '"' && !inSingleQuote)
+        {
+            inDoubleQuote = !inDoubleQuote;
+            continue;
+        }
+
+        if (c == '\'' && !inDoubleQuote)
+        {
+            inSingleQuote = !inSingleQuote;
+            continue;
+        }
+
+        if ((c == ' ' || c == '\t') && !inSingleQuote && !inDoubleQuote)
+        {
+            if (!word.empty())
+            {
+                words.push_back(word);
+                word.clear();
+            }
+            continue;
+        }
+
+        word += c;
+    }
+
+    if (!word.empty())
+    {
+        words.push_back(word);
+    }
+
+    std::string joined;
+    for (size_t i = 0; i < words.size(); ++i)
+    {
+        if (i > 0)
+        {
+            joined += ' ';
+        }
+        joined += words[i];
+    }
+
+    return joined;
+}
 
 std::pair<std::string, std::string> splitFirstWord(std::string s)
 {
@@ -11,10 +84,20 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
     size_t i = 0;
     while (s[i] == ' ')
         i++;
-    while (i < s.length() && s[i] != ' ')
-    {
-        firstWord += s[i];
-        i++;
+    if(s[i] == '"' || s[i] == '\''){
+        char quoteChar = s[i++];
+        firstWord += quoteChar;
+        while(s[i] != quoteChar){
+            firstWord += s[i++];
+        }
+        firstWord += s[i++];
+    }
+    else{
+        while (i < s.length() && s[i] != ' ')
+        {
+            firstWord += s[i];
+            i++;
+        }
     }
     i++;
     while (i < s.size())
@@ -22,8 +105,10 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
         rest += s[i];
         i++;
     }
+    firstWord = tokenizeCommandLine(firstWord);
     return {firstWord, rest};
 }
+
 
 std::vector<std::string> splitPATH()
 {
