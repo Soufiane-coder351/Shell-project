@@ -86,10 +86,11 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
         i++;
     if(s[i] == '"' || s[i] == '\''){
         char quoteChar = s[i++];
+        firstWord += quoteChar;
         while(s[i] != quoteChar){
             firstWord += s[i++];
         }
-        i++;
+        firstWord += s[i++];
     }
     else{
         while (i < s.length() && s[i] != ' ')
