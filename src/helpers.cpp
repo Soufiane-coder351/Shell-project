@@ -93,7 +93,7 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
         rest += s[i];
         i++;
     }
-    return {firstWord, rest};
+    return {tokenizeCommandLine(firstWord)[0], rest};
 }
 
 
