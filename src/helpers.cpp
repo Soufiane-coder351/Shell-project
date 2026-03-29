@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <unistd.h>
+#include <iostream>
 
 namespace fs = std::filesystem;
 
