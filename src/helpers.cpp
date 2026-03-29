@@ -1,6 +1,7 @@
 #include "helpers.h"
 #include <cstdlib>
 #include <filesystem>
+#include <iostream>
 #include <unistd.h>
 
 namespace fs = std::filesystem;
@@ -104,6 +105,7 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
         i++;
     }
     firstWord = tokenizeCommandLine(firstWord);
+    std::cout << "first word is: " << firstWord << std::endl;
     return {firstWord, rest};
 }
 
