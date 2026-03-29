@@ -27,7 +27,7 @@ std::vector<std::string> tokenizeCommandLine(const std::string& input)
 
         if (c == '\\' && inDoubleQuote)
         {
-            if (input[i + 1] == '\"' || input[i + 1] == '\\')
+            if (i + 1 < input.size() && (input[i + 1] == '"' || input[i + 1] == '\\'))
             {
                 word += input[++i];
                 continue;
@@ -69,25 +69,33 @@ std::vector<std::string> tokenizeCommandLine(const std::string& input)
 
 std::pair<std::string, std::string> splitFirstWord(std::string s)
 {
-    std::vector<std::string> words = tokenizeCommandLine(s);
-    if (words.empty())
-    {
-        return {"", ""};
-    }
-
-    std::string firstWord = words[0];
-    std::string rest;
-    for (size_t i = 1; i < words.size(); ++i)
-    {
-        if (i > 1)
-        {
-            rest += ' ';
+    std::string firstWord, rest;
+    size_t i = 0;
+    while (s[i] == ' ')
+        i++;
+    if(s[i] == '"' || s[i] == '\''){
+        char quoteChar = s[i++];
+        while(s[i] != quoteChar){
+            firstWord += s[i++];
         }
-        rest += words[i];
+        i++;
     }
-
+    else{
+        while (i < s.length() && s[i] != ' ')
+        {
+            firstWord += s[i];
+            i++;
+        }
+    }
+    i++;
+    while (i < s.size())
+    {
+        rest += s[i];
+        i++;
+    }
     return {firstWord, rest};
 }
+
 
 std::vector<std::string> splitPATH()
 {
