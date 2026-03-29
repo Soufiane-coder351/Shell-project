@@ -2,11 +2,10 @@
 #include <cstdlib>
 #include <filesystem>
 #include <unistd.h>
-#include <iostream>
 
 namespace fs = std::filesystem;
 
-std::vector<std::string> tokenizeCommandLine(const std::string& input)
+std::string tokenizeCommandLine(const std::string& input)
 {
     std::vector<std::string> words;
     std::string word;
@@ -65,7 +64,17 @@ std::vector<std::string> tokenizeCommandLine(const std::string& input)
         words.push_back(word);
     }
 
-    return words;
+    std::string joined;
+    for (size_t i = 0; i < words.size(); ++i)
+    {
+        if (i > 0)
+        {
+            joined += ' ';
+        }
+        joined += words[i];
+    }
+
+    return joined;
 }
 
 std::pair<std::string, std::string> splitFirstWord(std::string s)
@@ -94,8 +103,7 @@ std::pair<std::string, std::string> splitFirstWord(std::string s)
         rest += s[i];
         i++;
     }
-    firstWord = tokenizeCommandLine(firstWord)[0];
-    std::cout << "first line is: " << firstWord << std::endl;
+    firstWord = tokenizeCommandLine(firstWord);
     return {firstWord, rest};
 }
 

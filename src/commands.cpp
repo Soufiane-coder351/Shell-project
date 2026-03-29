@@ -4,13 +4,7 @@
 #include <cstdlib>
 
 void handleEcho(const std::string& rest) {
-    std::vector<std::string> words = tokenizeCommandLine(rest);
-
-    for (size_t j = 0; j < words.size(); ++j) {
-        if (j > 0) std::cout << " ";
-        std::cout << words[j];
-    }
-    std::cout << "\n";
+    std::cout << tokenizeCommandLine(rest) << "\n";
 }
 
 void handleType(const std::string& rest, const std::unordered_set<std::string>& knownCommands) {
